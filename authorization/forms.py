@@ -33,6 +33,7 @@ class SignUpForm(forms.ModelForm):
     def save(self):
         user = super(SignUpForm, self).save(commit=False)
         user.password = make_password(self.cleaned_data.get("password"))
+        user.set_default_username()
         user.save()
         return user
 

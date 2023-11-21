@@ -16,9 +16,6 @@ class Index(TemplateView):
         return context
 
 
-
-
-
 class About(TemplateView):
     template_name = "about.html"
 
