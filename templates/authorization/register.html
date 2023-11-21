@@ -53,11 +53,9 @@
                 <!-- logo-login -->
                 {% for f in form %}
                     <div class="form-input">
-                        <p>
-                            <label for="{{ f.id_for_label }}">{{ f.label }}</label>
-                            {{ f }}
-                            <div style="color: red;">{{ f.errors }}</div>
-                        </p>
+                        <label for="{{ f.id_for_label }}">{{ f.label }}</label>
+                        {{ f }}
+                        <div style="color: red;">{{ f.errors }}</div>
                     </div>
                 {% endfor %}
 

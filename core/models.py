@@ -13,5 +13,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    def set_default_username(self):
+        self.username = f"{self.first_name} {self.last_name}"
 
 
