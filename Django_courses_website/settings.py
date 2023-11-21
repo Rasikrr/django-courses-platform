@@ -145,4 +145,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Sending Emails
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+EMAIL_HOST = "smtp.yandex.com"
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "courses-website@yandex.ru"
+EMAIL_HOST_PASSWORD = "puizswjoitizqzyb"
+EMAIL_USE_SSL = True
+
+
+

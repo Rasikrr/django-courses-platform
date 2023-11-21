@@ -1,6 +1,7 @@
 from django.db import models
 from core.models import CustomUser
 from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your models here.
 class EmailVerification(models.Model):
@@ -16,6 +17,6 @@ class EmailVerification(models.Model):
         send_mail(
             "Subject",
             "Message",
-            "from@gmail.com",
+            settings.EMAIL_HOST_USER,
             (self.user.email,)
         )
