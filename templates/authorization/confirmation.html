@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'css/confirmation.css' %}">
+{% endblock %}
+
+{% block main %}
+ <div class="confirmation-container">
+    <div class="success-icon">&#10003;</div>
+    <h2 class="confirmation-title">{{ confirmation }}</h2>
+    <p class="confirmation-text">Now you can take advantage of all the features of our service.</p>
+    <a href="{% url 'index' %}" class="btn">Lets Go!</a>
+</div>
+{% endblock %}
+
+{% block custom_scripts %}
+<script src="{% static 'js/confirmation.js' %}"></script>
+{% endblock %}

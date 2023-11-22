@@ -61,5 +61,29 @@ class SignIn(LoginView):
         return response
 
 
+class Confirmation(TemplateView):
+    template_name = "authorization/confirmation.html"
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        email_verification_obj = EmailVerification.objects.filter(user=user)
+        if email_verification_obj.exists():
+            user.is_verified = True
+            email_verification_obj.delete()
+            user.save()
+        return super().get(request, *args, **kwargs)
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super(Confirmation, self).get_context_data(**kwargs)
+        context["title"] = "Account Confirmation"
+        if self.request.user.is_verified:
+            context["confirmation"] = "You have already confirmed your account"
+        else:
+            context["confirmation"] = "Account confirmed successfuly!"
+        return context
+
+
 class LogOut(LogoutView):
     next_page = "index"
