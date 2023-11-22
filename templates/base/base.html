@@ -76,7 +76,7 @@
                                                         <li><a href="elements.html">Element</a></li>
                                                     </ul>
                                                 </li>
-                                                <li><a href="contact.html">Contact</a></li>
+                                                <li><a href="{% url 'contact' %}">Contact</a></li>
                                                 <!-- Button -->
                                                 {% if request.user.is_authenticated %}
                                                     <i class="fa-regular fa-user" style="color: #fff; font-size: 24px"></i>

@@ -9,18 +9,15 @@ from .models import EmailVerification
 from django.contrib.auth import login, logout, authenticate
 from django.views.generic import CreateView, TemplateView
 from .forms import SignUpForm, SignInForm
+# Cutom Mixin
+from mixins import CommonMixin
 
 
 # Create your views here.
-class SignUp(CreateView):
+class SignUp(CommonMixin, CreateView):
     template_name = "authorization/register.html"
     form_class = SignUpForm
-
-    def get_context_data(self, **kwargs):
-        context = super(SignUp, self).get_context_data(**kwargs)
-        context["title"] = "Registration"
-        return context
-
+    title = "Registration"
 
     def form_valid(self, form):
         response = super(SignUp, self).form_valid(form)
@@ -29,7 +26,6 @@ class SignUp(CreateView):
         # Email Verification
         self.verification_email_sending(user=user)
         return response
-
 
     def get_success_url(self):
         return reverse_lazy("index")
@@ -61,8 +57,9 @@ class SignIn(LoginView):
         return response
 
 
-class Confirmation(TemplateView):
+class Confirmation(CommonMixin, TemplateView):
     template_name = "authorization/confirmation.html"
+    title = "Account Confirmation"
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -73,11 +70,8 @@ class Confirmation(TemplateView):
             user.save()
         return super().get(request, *args, **kwargs)
 
-
-
     def get_context_data(self, **kwargs):
         context = super(Confirmation, self).get_context_data(**kwargs)
-        context["title"] = "Account Confirmation"
         if self.request.user.is_verified:
             context["confirmation"] = "You have already confirmed your account"
         else:

@@ -16,3 +16,15 @@ class CustomUser(AbstractUser):
 
     def set_default_username(self):
         self.username = f"{self.first_name} {self.last_name}_{self.id}"
+
+
+class ContactMessage(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=256, blank=False, null=False)
+    message = models.TextField(blank=False, null=False)
+    created = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Message from {self.name}, email: {self.email}"

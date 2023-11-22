@@ -1,27 +1,39 @@
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, TemplateView
 from django.views import View
+from .forms import ContactForm
+from mixins import CommonMixin
 
 
 # Create your views here.
-class Index(TemplateView):
+class Index(CommonMixin, TemplateView):
     template_name = "index.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Courses website"
-        return context
+    title = "Main page | Courses"
 
 
-class About(TemplateView):
+class About(CommonMixin, TemplateView):
     template_name = "about.html"
+    title = "About"
 
-    def get_context_data(self, **kwargs):
-        context = super(About, self).get_context_data()
-        context["title"] = "About"
-        return context
+
+class Contact(CommonMixin, CreateView):
+    template_name = "contact.html"
+    title = "Contacts"
+    form_class = ContactForm
+    success_url = reverse_lazy("contact")
+
+    def form_valid(self, form):
+        response = super(Contact, self).form_valid(form)
+        user = self.request.user
+        contact_message = form.save(commit=False)
+        contact_message.user = user
+        contact_message.save()
+        return response
+
+
+
 
 
