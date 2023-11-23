@@ -58,7 +58,7 @@ ROOT_URLCONF = 'Django_courses_website.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR/'authorization'/'email_templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -134,7 +134,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), os.path.join(BASE_DIR, "authorization", "email_templates", "images")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = "/media/"

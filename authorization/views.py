@@ -12,14 +12,14 @@ from django.views.generic import CreateView, TemplateView
 from django.core.exceptions import ValidationError
 from .forms import SignUpForm, SignInForm, ResetPasswordForm, ChangePasswordForm
 # Custom Mixin
-from mixins import CommonMixin
+from mixins import TitleMixin
 
 
 # Create your views here.
-class SignUp(CommonMixin, CreateView):
+class SignUp(TitleMixin, CreateView):
     template_name = "authorization/register.html"
     form_class = SignUpForm
-    title = "Registration"
+    title = "Registration | Courses"
 
     def form_valid(self, form):
         response = super(SignUp, self).form_valid(form)
@@ -44,10 +44,11 @@ class SignUp(CommonMixin, CreateView):
         return super().get(request, *args, **kwargs)
 
 
-class SignIn(LoginView):
+class SignIn(TitleMixin, LoginView):
     template_name = "authorization/login.html"
     redirect_authenticated_user = "index"
     form_class = SignInForm
+    title = "Login | Courses"
 
     def get_success_url(self):
         return reverse_lazy("index")
@@ -59,9 +60,9 @@ class SignIn(LoginView):
         return response
 
 
-class Confirmation(CommonMixin, TemplateView):
+class Confirmation(TitleMixin, TemplateView):
     template_name = "authorization/confirmation.html"
-    title = "Account Confirmation"
+    title = "Account Confirmation | Courses"
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -81,14 +82,14 @@ class Confirmation(CommonMixin, TemplateView):
         return context
 
 
-class ResetPassword(CommonMixin, PasswordResetView):
+class ResetPassword(TitleMixin, PasswordResetView):
     template_name = "authorization/reset_password.html"
     title = "Reser Password | Courses"
     form_class = ResetPasswordForm
     success_url = reverse_lazy("password_reset_done")
 
 
-class PasswordChange(CommonMixin, PasswordResetConfirmView):
+class PasswordChange(TitleMixin, PasswordResetConfirmView):
     title = "Change Password | Courses"
     form_class = ChangePasswordForm
     template_name = "authorization/password_reseting.html"
@@ -100,12 +101,12 @@ class PasswordChange(CommonMixin, PasswordResetConfirmView):
         return response
 
 
-class PasswordResetDone(CommonMixin, PasswordResetDoneView):
+class PasswordResetDone(TitleMixin, PasswordResetDoneView):
     template_name = "authorization/password_reset_done.html"
-    title = "Password reset"
+    title = "Password reset | Courses"
 
-class PasswordResetCompleted(CommonMixin, PasswordResetCompleteView):
-    title = "Success"
+class PasswordResetCompleted(TitleMixin, PasswordResetCompleteView):
+    title = "Success | Courses"
     template_name = "authorization/reset_completed.html"
 
 

@@ -1,3 +1,4 @@
+import base64
 from django import forms
 from django.contrib.auth import login, authenticate, get_user
 from core.models import CustomUser
@@ -5,7 +6,10 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 # from django.core.mail import send_mail
+from django.template.loader import get_template
+from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
+import os
 
 
 class SignUpForm(forms.ModelForm):
@@ -71,7 +75,6 @@ class SignInForm(AuthenticationForm):
 
 class ResetPasswordForm(PasswordResetForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Enter your email"}), label="Email")
-
     def send_mail(
         self,
         subject_template_name,
@@ -81,12 +84,20 @@ class ResetPasswordForm(PasswordResetForm):
         to_email,
         html_email_template_name=None,
     ):
-        super().send_mail(subject_template_name=subject_template_name,
-                          email_template_name=email_template_name,
-                          context=context,
-                          from_email=settings.EMAIL_HOST_USER,
-                          to_email=self.cleaned_data["email"],
-                          html_email_template_name=html_email_template_name)
+        html_email_template_path = "new-email.html"
+        subject = "Password reset on Courses"
+        text_content = ''
+        # Reset link
+        context["link"] = f"/reset/{context['uid']}/{context['token']}"
+        msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [self.cleaned_data["email"]])
+        logo_path = os.path.join(settings.BASE_DIR, "authorization", "email_templates", "images", "logo-removebg-preview.png")
+        with open(logo_path, "rb") as image:
+            image_data = base64.b64encode(image.read()).decode("utf-8")
+        context["logo"] = image_data
+
+        html_content = get_template(html_email_template_path).render(context)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
     def clean_email(self):
         email = self.cleaned_data["email"]

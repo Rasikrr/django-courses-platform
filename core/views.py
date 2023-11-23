@@ -6,21 +6,21 @@ from django.views.generic import CreateView, TemplateView
 from django.views import View
 from django.http import JsonResponse, HttpRequest
 from .forms import ContactForm
-from mixins import CommonMixin
+from mixins import TitleMixin
 
 
 # Create your views here.
-class Index(CommonMixin, TemplateView):
+class Index(TitleMixin, TemplateView):
     template_name = "index.html"
     title = "Main page | Courses"
 
 
-class About(CommonMixin, TemplateView):
+class About(TitleMixin, TemplateView):
     template_name = "about.html"
     title = "About"
 
 
-class Contact(CommonMixin, CreateView):
+class Contact(TitleMixin, CreateView):
     template_name = "contact.html"
     title = "Contacts"
     form_class = ContactForm
