@@ -7,10 +7,18 @@
 
 {% block main %}
  <div class="confirmation-container">
-    <div class="success-icon">&#10003;</div>
+    {% if has_time %}
+        <div class="success-icon">&#10003;</div>
+    {% else %}
+        <div><i class="fa-regular fa-xmark-large" style="color: #f41010; font-size: 36px"></i></div>
+    {% endif %}
     <h2 class="confirmation-title">{{ confirmation }}</h2>
-    <p class="confirmation-text">Now you can take advantage of all the features of our service.</p>
-    <a href="{% url 'index' %}" class="btn">Lets Go!</a>
+    {% if has_time %}
+        <p class="confirmation-text">Now you can take advantage of all the features of our service.</p>
+        <a href="{% url 'index' %}" class="btn">Lets Go!</a>
+    {% else %}
+        <a href="{% url 'index' %}" class="btn">Go Back</a>
+    {% endif %}
 </div>
 {% endblock %}
 
