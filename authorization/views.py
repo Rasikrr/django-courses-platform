@@ -1,15 +1,17 @@
 import uuid
 from django.shortcuts import render, reverse, redirect
 from django.urls import reverse_lazy
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetConfirmView, PasswordResetView, \
+PasswordResetCompleteView, PasswordResetDoneView
 from django.views import View
 from datetime import timedelta
 from django.utils.timezone import now
 from .models import EmailVerification
 from django.contrib.auth import login, logout, authenticate
 from django.views.generic import CreateView, TemplateView
-from .forms import SignUpForm, SignInForm
-# Cutom Mixin
+from django.core.exceptions import ValidationError
+from .forms import SignUpForm, SignInForm, ResetPasswordForm, ChangePasswordForm
+# Custom Mixin
 from mixins import CommonMixin
 
 
@@ -77,6 +79,35 @@ class Confirmation(CommonMixin, TemplateView):
         else:
             context["confirmation"] = "Account confirmed successfuly!"
         return context
+
+
+class ResetPassword(CommonMixin, PasswordResetView):
+    template_name = "authorization/reset_password.html"
+    title = "Reser Password | Courses"
+    form_class = ResetPasswordForm
+    success_url = reverse_lazy("password_reset_done")
+
+
+class PasswordChange(CommonMixin, PasswordResetConfirmView):
+    title = "Change Password | Courses"
+    form_class = ChangePasswordForm
+    template_name = "authorization/password_reseting.html"
+    success_url = reverse_lazy("password_reset_complete")
+
+    def form_valid(self, form):
+        response = super(PasswordChange, self).form_valid(form)
+        print(self.request.user)
+        return response
+
+
+class PasswordResetDone(CommonMixin, PasswordResetDoneView):
+    template_name = "authorization/password_reset_done.html"
+    title = "Password reset"
+
+class PasswordResetCompleted(CommonMixin, PasswordResetCompleteView):
+    title = "Success"
+    template_name = "authorization/reset_completed.html"
+
 
 
 class LogOut(LogoutView):

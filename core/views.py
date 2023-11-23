@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, TemplateView
 from django.views import View
+from django.http import JsonResponse, HttpRequest
 from .forms import ContactForm
 from mixins import CommonMixin
 
@@ -23,7 +24,7 @@ class Contact(CommonMixin, CreateView):
     template_name = "contact.html"
     title = "Contacts"
     form_class = ContactForm
-    success_url = reverse_lazy("contact")
+    success_url = reverse_lazy("index")
 
     def form_valid(self, form):
         response = super(Contact, self).form_valid(form)
@@ -31,7 +32,7 @@ class Contact(CommonMixin, CreateView):
         contact_message = form.save(commit=False)
         contact_message.user = user
         contact_message.save()
-        return response
+        return JsonResponse({})
 
 
 

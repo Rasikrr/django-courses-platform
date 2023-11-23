@@ -2,8 +2,10 @@ from django import forms
 from django.contrib.auth import login, authenticate, get_user
 from core.models import CustomUser
 from django.contrib.auth.hashers import make_password, check_password
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
+# from django.core.mail import send_mail
+from django.conf import settings
 
 
 class SignUpForm(forms.ModelForm):
@@ -46,7 +48,7 @@ class SignInForm(AuthenticationForm):
         self.fields["password"] = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Enter your password"}))
 
     def clean_password(self):
-        password = self.cleaned_data["password"]
+        password = self.cleaned_data.get("password")
         if len(password) < 8:
             raise ValidationError("Password must have atleast 8 symbols")
         return password
@@ -65,3 +67,50 @@ class SignInForm(AuthenticationForm):
 
     def get_user(self):
         return self.cleaned_data["user"]
+
+
+class ResetPasswordForm(PasswordResetForm):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Enter your email"}), label="Email")
+
+    def send_mail(
+        self,
+        subject_template_name,
+        email_template_name,
+        context,
+        from_email,
+        to_email,
+        html_email_template_name=None,
+    ):
+        super().send_mail(subject_template_name=subject_template_name,
+                          email_template_name=email_template_name,
+                          context=context,
+                          from_email=settings.EMAIL_HOST_USER,
+                          to_email=self.cleaned_data["email"],
+                          html_email_template_name=html_email_template_name)
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if not CustomUser.objects.filter(email=email).exists():
+            raise ValidationError("User with this email does not exist")
+        return email
+
+class ChangePasswordForm(PasswordChangeForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        del self.fields["old_password"]
+        self.fields["new_password1"] = forms.CharField(widget=forms.PasswordInput(), label="New password")
+        self.fields["new_password2"] = forms.CharField(widget=forms.PasswordInput(), label="Confirm password")
+
+    def clean_new_password1(self):
+        password_1 = self.cleaned_data["new_password1"]
+        if len(password_1) < 8:
+            raise forms.ValidationError("Password must has atleast 8 symbols")
+        return password_1
+
+    def clean_new_password2(self):
+        password_2 = self.cleaned_data.get("new_password2")
+        password_1 = self.cleaned_data.get("new_password1")
+        if password_1 != password_2:
+            raise forms.ValidationError("Passwords do not match")
+        return password_2
