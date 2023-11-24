@@ -20,7 +20,7 @@ class EmailVerification(models.Model):
         return f"Email verification object to {self.user.email}"
 
     def send_verification_email(self):
-        html_email_template_path = "new-email.html"
+        html_email_template_path = "account-confirmation.html"
         subject = f"Account confirmation for {self.user.username}"
         text_content = ""
         link = settings.DOMAIN_NAME + reverse("confirmation", kwargs={"email": self.user.email,

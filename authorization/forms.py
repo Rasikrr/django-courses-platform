@@ -110,11 +110,11 @@ class ResetPasswordForm(PasswordResetForm):
         to_email,
         html_email_template_name=None,
     ):
-        html_email_template_path = "new-email.html"
+        html_email_template_path = "password-reset.html"
         subject = "Password reset on Courses"
         text_content = ''
         # Making reset link
-        context["link"] = f"/reset/{context['uid']}/{context['token']}"
+        context["link"] = f"{settings.DOMAIN_NAME}/authorization/reset/{context['uid']}/{context['token']}"
         msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [self.cleaned_data["email"]])
         logo_path = os.path.join(settings.BASE_DIR, "authorization", "email_templates", "images", "logo-removebg-preview.png")
         with open(logo_path, "rb") as image:
