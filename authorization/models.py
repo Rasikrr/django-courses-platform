@@ -19,6 +19,7 @@ class EmailVerification(models.Model):
     def __str__(self):
         return f"Email verification object to {self.user.email}"
 
+    # Custom method
     def send_verification_email(self):
         html_email_template_path = "account-confirmation.html"
         subject = f"Account confirmation for {self.user.username}"

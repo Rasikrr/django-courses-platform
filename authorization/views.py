@@ -9,6 +9,7 @@ from django.utils.timezone import now
 from .models import EmailVerification
 from django.contrib.auth import login, logout, authenticate
 from django.views.generic import CreateView, TemplateView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ValidationError
 from .forms import SignUpForm, SignInForm, ResetPasswordForm, ChangePasswordForm
 # Custom Mixin
@@ -16,10 +17,13 @@ from mixins import TitleMixin
 
 
 # Create your views here.
-class SignUp(TitleMixin, CreateView):
+class SignUp(SuccessMessageMixin, TitleMixin, CreateView):
     template_name = "authorization/register.html"
     form_class = SignUpForm
     title = "Registration | Courses"
+    success_url = reverse_lazy("index")
+    success_message = "You have successfuly created your account!\n" \
+                      "Check your email to confirm it"
 
     def form_valid(self, form):
         response = super(SignUp, self).form_valid(form)
@@ -28,9 +32,6 @@ class SignUp(TitleMixin, CreateView):
         # Email Verification
         self.verification_email_sending(user=user)
         return response
-
-    def get_success_url(self):
-        return reverse_lazy("index")
 
     # Custom method
     def verification_email_sending(self, user):
