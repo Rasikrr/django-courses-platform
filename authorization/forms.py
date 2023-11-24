@@ -1,15 +1,27 @@
 import base64
+import os
 from django import forms
+from string import punctuation, ascii_uppercase
 from django.contrib.auth import login, authenticate, get_user
 from core.models import CustomUser
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
-# from django.core.mail import send_mail
 from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
-import os
+import re
+
+
+# Password validation
+def is_valid_password(password):
+    uppercase_pattern = re.compile(r'[A-Z]')
+    special_character_pattern = re.compile(r'[!@#$%^&*()_+{}[\]:;<>,.?~\\-]')
+
+    has_uppercase = bool(uppercase_pattern.search(password))
+    has_special_character = bool(special_character_pattern.search(password))
+
+    return has_uppercase and has_special_character
 
 
 class SignUpForm(forms.ModelForm):
@@ -26,15 +38,20 @@ class SignUpForm(forms.ModelForm):
             "password": forms.PasswordInput(attrs={"placeholder": "Enter your password"}),
         }
 
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
+        if len(password) < 8:
+            raise ValidationError("Password must has at least 8 symbols")
+        if not is_valid_password(password):
+            raise ValidationError("Password must contain at least 1 uppercase letter and 1 special symbol")
+        return password
 
     def clean_password_2(self):
         password_1 = self.cleaned_data.get("password")
         password_2 = self.cleaned_data.get("password_2")
-        if password_1 != password_2:
+        if password_1 and password_1 != password_2:
             raise ValidationError("Passwords are not the same")
-        if len(password_2) < 8 or len(password_1) < 8:
-            raise ValidationError("Password must has at least 8 symbols")
-        return password_1
+        return password_2
 
     def save(self):
         user = super(SignUpForm, self).save(commit=False)
@@ -54,7 +71,9 @@ class SignInForm(AuthenticationForm):
     def clean_password(self):
         password = self.cleaned_data.get("password")
         if len(password) < 8:
-            raise ValidationError("Password must have atleast 8 symbols")
+            raise ValidationError("Password must has at least 8 symbols")
+        if not is_valid_password(password):
+            raise ValidationError("Password must contain at least 1 uppercase letter and 1 special symbol")
         return password
 
     def clean(self):
@@ -75,6 +94,13 @@ class SignInForm(AuthenticationForm):
 
 class ResetPasswordForm(PasswordResetForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Enter your email"}), label="Email")
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if not CustomUser.objects.filter(email=email).exists():
+            raise ValidationError("User with this email does not exist")
+        return email
+
     def send_mail(
         self,
         subject_template_name,
@@ -99,12 +125,6 @@ class ResetPasswordForm(PasswordResetForm):
         msg.attach_alternative(html_content, "text/html")
         msg.send()
 
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-        if not CustomUser.objects.filter(email=email).exists():
-            raise ValidationError("User with this email does not exist")
-        return email
-
 class ChangePasswordForm(PasswordChangeForm):
 
     def __init__(self, *args, **kwargs):
@@ -113,15 +133,17 @@ class ChangePasswordForm(PasswordChangeForm):
         self.fields["new_password1"] = forms.CharField(widget=forms.PasswordInput(), label="New password")
         self.fields["new_password2"] = forms.CharField(widget=forms.PasswordInput(), label="Confirm password")
 
-    def clean_new_password1(self):
-        password_1 = self.cleaned_data["new_password1"]
-        if len(password_1) < 8:
-            raise forms.ValidationError("Password must has atleast 8 symbols")
-        return password_1
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
+        if len(password) < 8:
+            raise ValidationError("Password must has at least 8 symbols")
+        if not is_valid_password(password):
+            raise ValidationError("Password must contain at least 1 uppercase letter and 1 special symbol")
+        return password
 
     def clean_new_password2(self):
         password_2 = self.cleaned_data.get("new_password2")
         password_1 = self.cleaned_data.get("new_password1")
-        if password_1 != password_2:
+        if password_1 and password_1 != password_2:
             raise forms.ValidationError("Passwords do not match")
         return password_2
