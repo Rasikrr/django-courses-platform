@@ -14,13 +14,14 @@ class ContactForm(forms.ModelForm):
                                           "rows": "9",
                                           "onfocus": "this.placeholder = ''",
                                           "onblur": "this.placeholder = 'Enter Message'"
-                                          }),
+                                             }),
 
             "name": forms.TextInput(attrs={"class": "form-control valid",
                                            "type": "text",
                                            "placeholder": "Enter your name",
                                            "onfocus": "this.placeholder = ''",
-                                           "onblur": "this.placeholder = 'Enter your name'"}),
+                                           "onblur": "this.placeholder = 'Enter your name'"
+                                           }),
 
             "email": forms.TextInput(attrs={"class": "form-control valid",
                                             "type": "email",

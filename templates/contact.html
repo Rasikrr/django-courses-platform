@@ -5,6 +5,12 @@
 {% block main %}
 <main>
     <!--? slider Area Start-->
+     <div class="notification-container" id="notification-container">
+        <div class="notification" id="notification">
+            <p class="notification-message" id="notification-message">{{ message }}</p>
+            <button class="close-btn" id="close-btn">&times;</button>
+        </div>
+    </div>
     <section class="slider-area slider-area2">
         <div class="slider-active">
             <!-- Single Slider -->
@@ -77,7 +83,7 @@
                     <h2 class="contact-title">Get in Touch</h2>
                 </div>
                 <div class="col-lg-8">
-                    <form class="form-contact contact_form" method="post" action="" id="contactForm">
+                    <form class="form-contact contact_form" method="POST" action="" id="contactForm">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-12">
@@ -106,32 +112,44 @@
                             </div>
                         </div>
                         <div class="form-group mt-3">
-                            <button type="submit" class="button button-contactForm boxed-btn">Send</button>
+                            <button type="submit" class="button button-contactForm boxed-btn">Send</input>
                         </div>
                     </form>
-                    <script>
-                      $(document).ready(function() {
-                        $("#contactForm").submit(function(event) {
-                          event.preventDefault(); // Предотвращаем стандартную отправку формы
+                      <script>
+                          document.addEventListener('DOMContentLoaded', function () {
+                              console.log("WORKING");
+                              let form = document.getElementById('contactForm');
 
-                          // Отправка формы через AJAX
-                          $.ajax({
-                            type: "POST",
-                            url: $(this).attr("action"),
-                            data: $(this).serialize(),
-                            dataType: "json",
-                            success: function(data) {
-                                window.location.href = "";
-                            },
-                            error: function(error) {
-                              // Обработка ошибок
-                              console.log(error);
-                              alert("Error submitting form!");
-                            }
+                              form.addEventListener('submit', function (e) {
+                                  e.preventDefault();
+
+                                  let formData = new FormData(form);
+                                  console.log(formData)
+                                  var xhr = new XMLHttpRequest();
+                                  xhr.open('POST', '/contact/', true);  // Specify the URL for form submission
+                                  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');  // Indicate that it's an AJAX request
+                                  xhr.responseType = 'json';
+                                  xhr.send(formData);
+                                  xhr.onload = function () {
+                                      if (xhr.status === 200) {
+                                          console.log(xhr.response);
+                                          // Handle success response
+                                          alert(xhr.response.message);  // You can customize this part
+                                      } else {
+                                          console.error('Error in AJAX request');
+                                          // Handle error response
+                                          alert('Error: ' + xhr.response.message);  // You can customize this part
+                                      }
+                                  }
+
+
+                                  xhr.onerror = function () {
+                                      console.error('Request failed');
+                                      // Handle other errors
+                                  }
+                              });
                           });
-                        });
-                      });
-                    </script>
+                      </script>
                 </div>
                 <div class="col-lg-3 offset-lg-1">
                     <div class="media contact-info">
@@ -161,4 +179,68 @@
     </section>
     <!-- Contact Area End -->
 </main>
+{% endblock %}
+
+{% block custom_css %}
+<style>
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 300px;
+        z-index: 100000;
+        text-align: center;
+    }
+
+    .notification {
+        background-color: #4CAF50;
+        color: #fff;
+        padding: 16px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(-50px);
+        transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .notification.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        font-size: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block custom_scripts %}
+    <script>
+        function showNotification() {
+            const notificationContainer = document.getElementById('notification-container');
+            const notification = document.getElementById('notification');
+            const notificationMessage = document.getElementById('notification-message');
+
+            notificationMessage.innerText = 'You have successfuly created account! \n' +
+                'To confirm your account check your email';
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        document.getElementById('close-btn').addEventListener('click', function () {
+            document.getElementById('notification').classList.remove('show');
+        });
+
+        showNotification();
+    </script>
 {% endblock %}
