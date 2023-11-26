@@ -1,9 +1,8 @@
 import base64
 import os
 from django import forms
-from string import punctuation, ascii_uppercase
 from django.contrib.auth import login, authenticate, get_user
-from core.models import CustomUser
+from core.models import CustomUser, Profile
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
@@ -60,9 +59,15 @@ class SignUpForm(forms.ModelForm):
         user.save()
         return user
 
+    # Custom method
+    def create_profile(self):
+        user = CustomUser.objects.get(email=self.cleaned_data.get("email"))
+        Profile.objects.create(user=user)
+
 
 class SignInForm(AuthenticationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Enter your email"}), label="Email")
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         del self.fields["username"]
@@ -124,6 +129,7 @@ class ResetPasswordForm(PasswordResetForm):
         html_content = get_template(html_email_template_path).render(context)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
+
 
 class ChangePasswordForm(PasswordChangeForm):
 

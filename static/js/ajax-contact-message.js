@@ -17,12 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
       xhr.send(formData);
       xhr.onload = function () {
           if (xhr.status === 200) {
-              showNotification(xhr.response.message);
-              console.log(123);
+              showNotification([xhr.response.message, 200]);
           } else {
               console.error('Error in AJAX request');
-              // Handle error response
-              alert('Error: ' + xhr.response.message);  // You can customize this part
+              showNotification([xhr.response.message, -1])
           }
       }
 
@@ -33,12 +31,18 @@ document.addEventListener('DOMContentLoaded', function () {
       }
   });
 
-  function showNotification(message) {
+  function showNotification(response) {
         const notificationContainer = document.getElementById('notification-container');
         const notification = document.getElementById('notification');
         const notificationMessage = document.getElementById('notification-message');
 
-        notificationMessage.innerText = message;
+        if(response[1] == 200){
+            notification.style.backgroundColor = "#4CAF50";
+        } else {
+            notification.style.backgroundColor = "#8D1515FF";
+        }
+
+        notificationMessage.innerText = response[0];
         notification.style.display = "flex";
         notification.classList.add('show');
 

@@ -11,6 +11,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.views.generic import CreateView, TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ValidationError
+from core.models import Profile
 from .forms import SignUpForm, SignInForm, ResetPasswordForm, ChangePasswordForm
 # Custom Mixin
 from mixins import TitleMixin
@@ -28,9 +29,12 @@ class SignUp(SuccessMessageMixin, TitleMixin, CreateView):
     def form_valid(self, form):
         response = super(SignUp, self).form_valid(form)
         user = form.save()
+        # profile = Profile.objects.create(user=user)
         login(self.request, user, backend="Django_courses_website.backends.EmailBackend")
         # Email Verification
         self.verification_email_sending(user=user)
+        # Creating Profile
+        form.create_profile()
         return response
 
     # Custom method
@@ -50,9 +54,7 @@ class SignIn(TitleMixin, LoginView):
     redirect_authenticated_user = "index"
     form_class = SignInForm
     title = "Login | Courses"
-
-    def get_success_url(self):
-        return reverse_lazy("index")
+    success_url = reverse_lazy("index")
 
     def form_valid(self, form):
         response = super(SignIn, self).form_valid(form)
@@ -77,7 +79,6 @@ class Confirmation(TitleMixin, TemplateView):
             email_verification_obj.delete()
         return super().get(request, *args, **kwargs)
 
-
     def get_context_data(self, **kwargs):
         context = super(Confirmation, self).get_context_data(**kwargs)
         print("HAS TIME", self.has_time)
@@ -88,7 +89,7 @@ class Confirmation(TitleMixin, TemplateView):
             else:
                 user.is_verified = True
                 user.save()
-                context["confirmation"] = "Account confirmed successfuly!"
+                context["confirmation"] = "Account confirmed successfully!"
         else:
             context["confirmation"] = "Your link has expired"
         context["has_time"] = self.has_time
