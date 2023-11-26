@@ -32,7 +32,7 @@ class Contact(TitleMixin, CreateView):
         contact_message = form.save(commit=False)
         contact_message.user = user
         contact_message.save()
-        return JsonResponse({'message': 'success'}, status=200)
+        return JsonResponse({'message': 'Our support will contact you shortly!'}, status=200)
 
 
 

@@ -248,6 +248,43 @@
 
 
 <script src="https://kit.fontawesome.com/7f6b4f45cf.js" crossorigin="anonymous"></script>
+<style>
+    .notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    z-index: 100000;
+    text-align: center;
+    }
+
+    .notification {
+        background-color: #4CAF50;
+        color: #fff;
+        padding: 16px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(-50px);
+        transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .notification.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        font-size: 20px;
+    }
+</style>
 {% block custom_scripts %}
 {% endblock %}
 

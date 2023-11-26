@@ -521,66 +521,10 @@
     </section>
 </main>
 {% endblock %}
+
 {% block custom_css %}
-<style>
-    .notification-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 300px;
-        z-index: 100000;
-        text-align: center;
-    }
-
-    .notification {
-        background-color: #4CAF50;
-        color: #fff;
-        padding: 16px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        opacity: 0;
-        transform: translateY(-50px);
-        transition: opacity 0.3s, transform 0.3s;
-    }
-
-    .notification.show {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .close-btn {
-        background: none;
-        border: none;
-        color: #fff;
-        cursor: pointer;
-        font-size: 20px;
-    }
-</style>
 {% endblock %}
 
 {% block custom_scripts %}
-    <script>
-        function showNotification() {
-            const notificationContainer = document.getElementById('notification-container');
-            const notification = document.getElementById('notification');
-            const notificationMessage = document.getElementById('notification-message');
-
-            {#notificationMessage.innerText = 'You have successfuly created account! \n' +#}
-            {#    'To confirm your account check your email';#}
-            notification.classList.add('show');
-
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-
-        document.getElementById('close-btn').addEventListener('click', function () {
-            document.getElementById('notification').classList.remove('show');
-        });
-
-        showNotification();
-    </script>
+    <script src="{% static 'js/success_registration.js' %}"></script>
 {% endblock %}
