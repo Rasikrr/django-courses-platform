@@ -11,7 +11,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.views.generic import CreateView, TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ValidationError
-from core.models import Profile
+from core.models import ProfileModel
 from .forms import SignUpForm, SignInForm, ResetPasswordForm, ChangePasswordForm
 # Custom Mixin
 from mixins import TitleMixin
@@ -29,7 +29,6 @@ class SignUp(SuccessMessageMixin, TitleMixin, CreateView):
     def form_valid(self, form):
         response = super(SignUp, self).form_valid(form)
         user = form.save()
-        # profile = Profile.objects.create(user=user)
         login(self.request, user, backend="Django_courses_website.backends.EmailBackend")
         # Email Verification
         self.verification_email_sending(user=user)

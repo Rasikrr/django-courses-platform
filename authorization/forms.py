@@ -2,7 +2,7 @@ import base64
 import os
 from django import forms
 from django.contrib.auth import login, authenticate, get_user
-from core.models import CustomUser, Profile
+from core.models import CustomUser, ProfileModel
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
@@ -62,7 +62,7 @@ class SignUpForm(forms.ModelForm):
     # Custom method
     def create_profile(self):
         user = CustomUser.objects.get(email=self.cleaned_data.get("email"))
-        Profile.objects.create(user=user)
+        ProfileModel.objects.create(user=user)
 
 
 class SignInForm(AuthenticationForm):

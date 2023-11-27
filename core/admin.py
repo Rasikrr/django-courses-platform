@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, ContactMessage, Profile
+from .models import CustomUser, ContactMessage, ProfileModel
 
 # Register your models here.
 
@@ -16,7 +16,7 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_display_links = ("user", "name", "email")
     
 
-@admin.register(Profile)
+@admin.register(ProfileModel)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "github", "phone", "address")
     list_display_links = list_display
