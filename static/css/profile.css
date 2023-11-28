@@ -50,3 +50,12 @@
 .main-header{
     background-color: #9a64ff;
 }
+
+.inputs{
+    border: none;
+    text-align: right;
+}
+
+.inputs-2{
+    border: none;
+}
