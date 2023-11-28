@@ -32,15 +32,25 @@ class ContactMessage(models.Model):
 
 
 class ProfileModel(models.Model):
+    SPECIALIZATION_CHOICES = (
+        ("backend", "Backend Developer"),
+        ("frontend", "Frontend Developer"),
+        ("fullstack", "Full Stack Developer"),
+        ("android", "Mobile Android Developer"),
+        ("ios", "Mobile IOS Developer"),
+        ("gamedev", "Game Developer")
+    )
+
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     profile_image = models.ImageField(upload_to="profile_images", default="img-profile-default.png")
     website = models.URLField(null=True, blank=True)
     github = models.URLField(null=True, blank=True)
-    twitter = models.URLField(null=True, blank=True)
-    instagram = models.URLField(null=True, blank=True)
+    twitter = models.CharField(null=True, blank=True, max_length=100)
+    instagram = models.CharField(null=True, blank=True, max_length=100)
     facebook = models.URLField(null=True, blank=True)
     address = models.CharField(max_length=256, null=True, blank=True)
     phone = models.CharField(max_length=50, null=True, blank=True)
+    specialization = models.CharField(max_length=100, choices=SPECIALIZATION_CHOICES, default=None, blank=True, null=True)
 
     def __str__(self):
         return f"Profile of user: {self.user}"

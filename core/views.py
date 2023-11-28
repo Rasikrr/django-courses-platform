@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, TemplateView, UpdateView, FormView
 from django.views import View
 from django.http import JsonResponse, HttpRequest
-from .forms import ContactForm, ProfileForm
+from .forms import ContactForm
 from .models import ContactMessage, CustomUser, ProfileModel
 from mixins import TitleMixin
 
@@ -43,9 +43,8 @@ class Contact(TitleMixin, CreateView):
         return JsonResponse({'message': 'Something went wrong, please try later'})
 
 
-class Profile(TitleMixin, FormView):
+class Profile(TitleMixin, TemplateView):
     title = "Profile | Courses"
-    form_class = ProfileForm
     template_name = "profile.html"
 
     def get_context_data(self, **kwargs):
@@ -58,3 +57,10 @@ class Profile(TitleMixin, FormView):
         return context
 
 
+class ProfileEdit(TitleMixin, UpdateView):
+    template_name = ""
+    form_class = None
+
+
+    def get_success_url(self):
+        return reverse("profile", kwargs={"username": self.request.user.username})
