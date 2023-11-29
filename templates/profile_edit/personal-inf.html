@@ -2,6 +2,16 @@
 {% load static %}
 
 {% block main %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="notification-container" id="notification-container">
+                <div class="notification" id="notification">
+                    <p class="notification-message" id="notification-message">{{ message }}</p>
+                    <button class="close-btn" id="close-btn">&times;</button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
     <main>
 
         {% include 'profile_edit/menu.html' %}
@@ -9,16 +19,13 @@
         <section class="content">
           <div id="personal-info" class="profile-section">
             <h2>Personal Information</h2>
-            <form class="profile-form">
-              <label for="firstName">Name:</label>
-              <input type="text" id="firstName" name="firstName" required>
-
-              <label for="lastName">Surname:</label>
-              <input type="text" id="lastName" name="lastName" required>
-
-              <label for="username">Username:</label>
-              <input type="text" id="username" name="username" required>
-
+            <form class="profile-form" method="POST">
+                {% csrf_token %}
+                {% for f in form %}
+                    <label for="{{ f.id_for_label }}">{{ f.label }}</label>
+                    {{ f }}
+                    <div style="color: red;">{{ f.errors }}</div>
+                {% endfor %}
               <button type="submit">Save</button>
             </form>
           </div>
@@ -32,4 +39,5 @@
 
 {% block custom_scripts %}
     <script src="{% static 'js/profile-edit.js' %}"></script>
+    <script src="{% static 'js/success_registration.js' %}"></script>
 {% endblock %}

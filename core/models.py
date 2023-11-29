@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.urls import reverse
 # Create your models here.
 
 
@@ -17,6 +17,9 @@ class CustomUser(AbstractUser):
 
     def set_default_username(self):
         self.username = f"{self.first_name}_{self.last_name}_{self.id}"
+
+    def get_absolute_url(self):
+        return reverse("profile", kwargs={"username": self.username})
 
 
 class ContactMessage(models.Model):

@@ -23,7 +23,7 @@ class SignUp(SuccessMessageMixin, TitleMixin, CreateView):
     form_class = SignUpForm
     title = "Registration | Courses"
     success_url = reverse_lazy("index")
-    success_message = "You have successfuly created your account!\n" \
+    success_message = "You have successfully created your account!\n" \
                       "Check your email to confirm it"
 
     def form_valid(self, form):

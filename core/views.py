@@ -4,8 +4,9 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, TemplateView, UpdateView, FormView
 from django.views import View
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse, HttpRequest
-from .forms import ContactForm
+from .forms import ContactForm, PersonalInfForm
 from .models import ContactMessage, CustomUser, ProfileModel
 from mixins import TitleMixin, MenuMixin
 
@@ -57,15 +58,19 @@ class Profile(TitleMixin, TemplateView):
         return context
 
 
-class PersonalInfEdit(MenuMixin, TitleMixin, TemplateView):
+class PersonalInfEdit(SuccessMessageMixin, MenuMixin, TitleMixin, UpdateView):
     title = "Personal Information | Courses"
     template_name = "profile_edit/personal-inf.html"
     menu_section = "personal-inf"
+    form_class = PersonalInfForm
+    model = CustomUser
+    success_message = "Your personal information was updated!"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print(context)
-        return context
+    def get_object(self, queryset=None):
+        return CustomUser.objects.get(username=self.kwargs.get("username"))
+
+    def get_success_url(self):
+        return self.request.path
 
 
 class PaymentInfEdit(MenuMixin, TitleMixin, TemplateView):
@@ -73,19 +78,10 @@ class PaymentInfEdit(MenuMixin, TitleMixin, TemplateView):
     template_name = "profile_edit/payments-inf.html"
     menu_section = "payments-inf"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print(context)
-        return context
-
 
 class ProfileEdit(MenuMixin, TitleMixin, TemplateView):
     title = "Profile Edit | Courses"
     template_name = "profile_edit/profile-edit.html"
     menu_section = "profile-edit"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print(context)
-        return context
 

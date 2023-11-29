@@ -42,4 +42,17 @@ class ContactForm(forms.ModelForm):
         return contact_message
 
 
+class PersonalInfForm(forms.ModelForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ("first_name", "last_name", "username")
+        widgets = {
+            "first_name": forms.TextInput(attrs={"type": "text",
+                                                 "name": "firstName"}),
+            "last_name": forms.TextInput(attrs={"type": "text",
+                                                "name": "surName"}),
+            "username": forms.TextInput(attrs={"type": "text",
+                                               "name": "username"})
+        }
 

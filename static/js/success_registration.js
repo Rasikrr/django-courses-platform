@@ -3,8 +3,8 @@ function showNotification() {
     const notification = document.getElementById('notification');
     const notificationMessage = document.getElementById('notification-message');
 
-    notificationMessage.innerText = 'You have successfuly created account! \n' +
-        'To confirm your account check your email';
+    // notificationMessage.innerText = 'You have successfully created account! \n' +
+    //     'To confirm your account check your email';
     notification.classList.add('show');
 
     setTimeout(() => {
