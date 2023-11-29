@@ -7,7 +7,7 @@ from django.views import View
 from django.http import JsonResponse, HttpRequest
 from .forms import ContactForm
 from .models import ContactMessage, CustomUser, ProfileModel
-from mixins import TitleMixin
+from mixins import TitleMixin, MenuMixin
 
 
 # Create your views here.
@@ -57,10 +57,35 @@ class Profile(TitleMixin, TemplateView):
         return context
 
 
-class ProfileEdit(TitleMixin, UpdateView):
-    template_name = ""
-    form_class = None
+class PersonalInfEdit(MenuMixin, TitleMixin, TemplateView):
+    title = "Personal Information | Courses"
+    template_name = "profile_edit/personal-inf.html"
+    menu_section = "personal-inf"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return context
 
 
-    def get_success_url(self):
-        return reverse("profile", kwargs={"username": self.request.user.username})
+class PaymentInfEdit(MenuMixin, TitleMixin, TemplateView):
+    title = "Payment Information | Courses"
+    template_name = "profile_edit/payments-inf.html"
+    menu_section = "payments-inf"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return context
+
+
+class ProfileEdit(MenuMixin, TitleMixin, TemplateView):
+    title = "Profile Edit | Courses"
+    template_name = "profile_edit/profile-edit.html"
+    menu_section = "profile-edit"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return context
+

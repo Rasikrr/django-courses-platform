@@ -103,11 +103,13 @@
                     </div>
                   </div>
                   <hr>
-                  <div class="row">
-                    <div class="col-sm-12">
-                      <a class="btn btn-info " href="">Edit</a>
-                    </div>
-                  </div>
+                    {% if request.user == user %}
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <a class="btn btn-info " href="{% url 'personal-inf' username=request.user.username %}">Edit</a>
+                        </div>
+                      </div>
+                    {% endif %}
                 </div>
               </div>
 

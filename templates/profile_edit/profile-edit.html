@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block main %}
+    <main>
+
+        {% include 'profile_edit/menu.html' %}
+
+        <section class="content">
+          <div id="personal-info" class="profile-section">
+            <h2>Payments</h2>
+            <form class="profile-form">
+              <label for="firstName">Name:</label>
+              <input type="text" id="firstName" name="firstName" required>
+
+              <label for="lastName">Surname:</label>
+              <input type="text" id="lastName" name="lastName" required>
+
+              <label for="username">Username:</label>
+              <input type="text" id="username" name="username" required>
+
+              <button type="submit">Save</button>
+            </form>
+          </div>
+        </section>
+    </main>
+{% endblock %}
+
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'css/personal-inf.css' %}">
+{% endblock %}
+
+{% block custom_scripts %}
+    <script src="{% static 'js/profile-edit.js' %}"></script>
+{% endblock %}

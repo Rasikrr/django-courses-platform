@@ -1,0 +1,8 @@
+<button id="menu-toggle-btn"><i class="fa-solid fa-angle-right"></i></button>
+<nav class="sidebar">
+  <a {% if menu_section == "personal-inf" %} class="disabled" style="color: #807e7e" {% endif %} href="{% url 'personal-inf' username=request.user.username %}">Personal Information</a>
+  <a {% if menu_section == "profile-edit" %} class="disabled" style="color: #807e7e" {% endif %} href="{% url 'profile-edit' username=request.user.username %}">Profile</a>
+  <a  href="{% url 'profile' username=request.user.username %}">Watch Profile</a>
+  <a {% if menu_section == "change-email" %} class="disabled" style="color: #807e7e" {% endif %} href="">Change Email</a>
+  <a {% if menu_section == "payments-inf" %} class="disabled" style="color: #807e7e" {% endif %} href="{% url 'payment-inf' username=request.user.username %}">Payments</a>
+</nav>

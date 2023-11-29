@@ -118,10 +118,10 @@ class PasswordResetDone(TitleMixin, PasswordResetDoneView):
     template_name = "authorization/password_reset_done.html"
     title = "Password reset | Courses"
 
+
 class PasswordResetCompleted(TitleMixin, PasswordResetCompleteView):
     title = "Success | Courses"
     template_name = "authorization/reset_completed.html"
-
 
 
 class LogOut(LogoutView):

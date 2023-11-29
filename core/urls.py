@@ -6,5 +6,7 @@ urlpatterns = [
     path("about/", About.as_view(), name="about"),
     path("contact/", Contact.as_view(), name="contact"),
     path("profile/<str:username>", Profile.as_view(), name="profile"),
-    path("profile/edit/<str:username>", ProfileEdit.as_view(), name="profile-edit")
+    path("profile/edit/pesonal-inf/<str:username>", PersonalInfEdit.as_view(), name="personal-inf"),
+    path("profile/edit/payment/<str:username>", PaymentInfEdit.as_view(), name="payment-inf"),
+    path("profile/edit/profile-edit/<str:username>", ProfileEdit.as_view(), name="profile-edit")
 ]
